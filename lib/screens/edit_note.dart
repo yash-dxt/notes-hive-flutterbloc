@@ -32,10 +32,13 @@ class EditNote extends StatelessWidget {
             onPressed: () {
               if (_formKey.currentState.validate()) {
                 newNote
-                    ? BlocProvider.of<NoteBloc>(context)
-                        .add(NoteAddEvent(title: title, content: content))
+                    ? BlocProvider.of<NoteBloc>(context).add(NoteAddEvent(
+                        title: title, content: content, date: DateTime.now()))
                     : BlocProvider.of<NoteBloc>(context).add(NoteEditEvent(
-                        title: title, content: content, index: index));
+                        title: title,
+                        content: content,
+                        index: index,
+                        date: DateTime.now()));
                 Navigator.pop(context);
               }
             },
@@ -54,7 +57,7 @@ class EditNote extends StatelessWidget {
                     initialValue: newNote ? '' : note.title,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter the note title';
+                        return 'Please enter the Note title';
                       }
                       return null;
                     },
@@ -77,7 +80,7 @@ class EditNote extends StatelessWidget {
                     initialValue: newNote ? '' : note.content,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'Please enter the note body!';
+                        return 'Please enter the Note body!';
                       }
                       return null;
                     },

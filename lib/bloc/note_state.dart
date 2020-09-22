@@ -19,4 +19,10 @@ class YourNotesState extends NoteState {
   YourNotesState({@required this.notes});
 }
 
+class YourNotesSortedByUpdatedDate extends NoteState {
+  final List<Note> notes;
+
+  YourNotesSortedByUpdatedDate(this.notes);
+}
+
 class NewNoteState extends NoteState {}

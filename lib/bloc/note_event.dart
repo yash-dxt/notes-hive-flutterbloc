@@ -7,16 +7,22 @@ class ProfileInitialEvent extends NoteEvent {}
 
 class NoteAddEvent extends NoteEvent {
   final String title, content;
+  final DateTime date;
 
-  NoteAddEvent({@required this.title, @required this.content});
+  NoteAddEvent(
+      {@required this.date, @required this.title, @required this.content});
 }
 
 class NoteEditEvent extends NoteEvent {
   final String title, content;
   final int index;
+  final DateTime date;
 
   NoteEditEvent(
-      {@required this.title, @required this.content, @required this.index});
+      {@required this.date,
+      @required this.title,
+      @required this.content,
+      @required this.index});
 }
 
 class NoteDeleteEvent extends NoteEvent {
@@ -24,3 +30,5 @@ class NoteDeleteEvent extends NoteEvent {
 
   NoteDeleteEvent({@required this.index});
 }
+
+class SortNotesByUpdatedDate extends NoteEvent {}

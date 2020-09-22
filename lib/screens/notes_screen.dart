@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_hive/bloc/note_bloc.dart';
+import 'package:notes_hive/models/note_model.dart';
 
 import '../widgets.dart';
 import 'edit_note.dart';
@@ -32,6 +33,15 @@ class NotesScreen extends StatelessWidget {
               'Your Notes',
               style: TextStyle(color: Colors.white),
             ),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.sort),
+                onPressed: () {
+                  BlocProvider.of<NoteBloc>(context)
+                      .add(SortNotesByUpdatedDate());
+                },
+              ),
+            ],
             expandedHeight: 250,
             floating: false,
             pinned: true,
@@ -43,14 +53,14 @@ class NotesScreen extends StatelessWidget {
               if (state is NoteInitial) {
                 return SliverList(
                     delegate: SliverChildListDelegate([Container()]));
-              }
-              if (state is YourNotesState) {
-                return NoteGrid(state: state);
-              }
-              if (state is NotesLoading) {
+              } else if (state is YourNotesState) {
+                return NoteGrid(notes: state.notes);
+              } else if (state is NotesLoading) {
                 return SliverList(
                     delegate:
                         SliverChildListDelegate([Center(child: Container())]));
+              } else if (state is YourNotesSortedByUpdatedDate) {
+                return NoteGrid(notes: state.notes);
               } else {
                 return SliverList(
                     delegate: SliverChildListDelegate([Container()]));
@@ -64,13 +74,13 @@ class NotesScreen extends StatelessWidget {
 }
 
 class NoteGrid extends StatelessWidget {
-  const NoteGrid({Key key, this.state}) : super(key: key);
-  final YourNotesState state;
+  const NoteGrid({Key key, this.notes}) : super(key: key);
+  final List<Note> notes;
   @override
   Widget build(BuildContext context) {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-        final note = state.notes[index];
+        final note = notes[index];
         return InkWell(
           onTap: () {
             Navigator.push(context,
@@ -91,7 +101,7 @@ class NoteGrid extends StatelessWidget {
             content: note.content,
           ),
         );
-      }, childCount: state.notes.length),
+      }, childCount: notes.length),
       gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
     );

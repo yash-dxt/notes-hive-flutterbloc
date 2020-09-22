@@ -18,7 +18,7 @@ dependencies:
   hive_flutter: ^0.3.0+2
   hive: ^1.4.1+1
   flutter_bloc: ^6.0.0
-
+  logger:
 
   cupertino_icons: ^0.1.3
 
