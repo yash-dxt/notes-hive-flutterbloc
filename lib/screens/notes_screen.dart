@@ -4,7 +4,6 @@ import 'package:notes_hive/bloc/note_bloc.dart';
 
 import '../widgets.dart';
 import 'edit_note.dart';
-import 'new_note.dart';
 
 class NotesScreen extends StatelessWidget {
   final Color black = Color(0xFF1e2022);
@@ -18,7 +17,9 @@ class NotesScreen extends StatelessWidget {
             onPressed: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (BuildContext context) {
-                return NewNote();
+                return EditNote(
+                  newNote: true,
+                );
               }));
             },
             child: Icon(Icons.add),
@@ -77,6 +78,7 @@ class NoteGrid extends StatelessWidget {
               return EditNote(
                 note: note,
                 index: index,
+                newNote: false,
               );
             }));
           },
@@ -92,40 +94,6 @@ class NoteGrid extends StatelessWidget {
       }, childCount: state.notes.length),
       gridDelegate:
           SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-    );
-  }
-}
-
-class AlertDialogRefactor extends StatelessWidget {
-  const AlertDialogRefactor({Key key, this.index}) : super(key: key);
-  final int index;
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(
-        'Delete?',
-        style: TextStyle(color: Color(0xFF49565e)),
-      ),
-      actions: [
-        FlatButton(
-            child: Text(
-              'YES',
-              style: TextStyle(color: Colors.redAccent),
-            ),
-            onPressed: () {
-              BlocProvider.of<NoteBloc>(context)
-                  .add(NoteDeleteEvent(index: index));
-              Navigator.pop(context);
-            }),
-        FlatButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            child: Text(
-              'CANCEL',
-              style: TextStyle(color: Color(0xFF49565e)),
-            ))
-      ],
     );
   }
 }

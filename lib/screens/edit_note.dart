@@ -4,8 +4,8 @@ import 'package:notes_hive/bloc/note_bloc.dart';
 import 'package:notes_hive/models/note_model.dart';
 
 class EditNote extends StatelessWidget {
-  EditNote({this.note, this.index});
-
+  EditNote({this.note, this.index, @required this.newNote});
+  final bool newNote;
   final Note note;
   final int index;
 
@@ -13,13 +13,13 @@ class EditNote extends StatelessWidget {
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
 
-    String title = note.title;
-    String content = note.content;
+    String title = note != null ? note.title : "";
+    String content = note != null ? note.content : "";
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: Text(
-          'New Note',
+          newNote ? 'New Note' : 'Edit Note',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Color(0xFF5b696f),
@@ -28,11 +28,14 @@ class EditNote extends StatelessWidget {
           padding: EdgeInsets.only(left: 10, bottom: 10),
           child: FloatingActionButton.extended(
             icon: Icon(Icons.add),
-            label: Text('UPDATE'),
+            label: Text(newNote ? 'ADD' : 'UPDATE'),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                BlocProvider.of<NoteBloc>(context).add(NoteEditEvent(
-                    title: title, content: content, index: index));
+                newNote
+                    ? BlocProvider.of<NoteBloc>(context)
+                        .add(NoteAddEvent(title: title, content: content))
+                    : BlocProvider.of<NoteBloc>(context).add(NoteEditEvent(
+                        title: title, content: content, index: index));
                 Navigator.pop(context);
               }
             },
@@ -48,10 +51,10 @@ class EditNote extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: TextFormField(
-                    initialValue: note.title,
+                    initialValue: newNote ? '' : note.title,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'please enter some text';
+                        return 'Please enter the note title';
                       }
                       return null;
                     },
@@ -59,7 +62,6 @@ class EditNote extends StatelessWidget {
                       title = text;
                     },
                     decoration: InputDecoration(
-//                        fillColor: Color(0xFFcedae2),
                       labelStyle: TextStyle(color: Colors.black38),
                       border: OutlineInputBorder(),
                       labelText: 'Note Title',
@@ -72,10 +74,10 @@ class EditNote extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   child: TextFormField(
-                    initialValue: note.content,
+                    initialValue: newNote ? '' : note.content,
                     validator: (value) {
                       if (value.isEmpty) {
-                        return 'please enter some text';
+                        return 'Please enter the note body!';
                       }
                       return null;
                     },
