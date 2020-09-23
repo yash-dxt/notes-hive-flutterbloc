@@ -10,11 +10,10 @@ import 'package:notes_hive/services/note_database.dart';
 part 'note_event.dart';
 part 'note_state.dart';
 
-NoteDatabase _noteDatabase = NoteDatabase();
-List<Note> _notes = [];
-
 class NoteBloc extends Bloc<NoteEvent, NoteState> {
-  NoteBloc() : super(NoteInitial());
+  final NoteDatabase _noteDatabase;
+  List<Note> _notes = [];
+  NoteBloc(this._noteDatabase) : super(NoteInitial());
 
   @override
   Stream<NoteState> mapEventToState(
@@ -40,10 +39,6 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   Stream<NoteState> _mapInitialEventToState() async* {
     yield NotesLoading();
 
-    await Hive.initFlutter();
-    Hive.registerAdapter<Note>(NoteAdapter());
-    await Hive.openBox<Note>("Note");
-    print('initialised');
     await _getNotes();
 
     yield YourNotesState(notes: _notes);
