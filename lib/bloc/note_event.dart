@@ -1,7 +1,10 @@
 part of 'note_bloc.dart';
 
 @immutable
-abstract class NoteEvent {}
+abstract class NoteEvent extends Equatable {
+  @override
+  List<Object> get props => [];
+}
 
 class ProfileInitialEvent extends NoteEvent {}
 

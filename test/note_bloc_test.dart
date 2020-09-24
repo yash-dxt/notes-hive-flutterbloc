@@ -9,23 +9,43 @@ class MockNoteDatabase extends Mock implements NoteDatabase {}
 
 void main() {
   MockNoteDatabase noteDatabase;
-  NoteBloc noteBloc;
   setUp(() {
     noteDatabase = MockNoteDatabase();
-    noteBloc = NoteBloc(noteDatabase);
   });
 
   group('Note Bloc Test', () {
-    blocTest("",
+    List<Note> notes = [];
+
+    blocTest("When Profile Initial Event is Triggered",
         build: () {
-          when(noteDatabase.addToBox(any)).thenAnswer((_) async => 1);
-          when(noteDatabase.deleteFromBox(any)).thenAnswer((_) async => 1);
-          when(noteDatabase.updateNote(any, any)).thenAnswer((_) async => 1);
-          when(noteDatabase.getFullNote())
-              .thenAnswer((_) async => [Note(), Note()]);
-          return noteBloc;
+          when(noteDatabase.getFullNote()).thenAnswer((_) async => notes);
+          return NoteBloc(noteDatabase);
         },
         act: (noteBloc) => noteBloc.add(ProfileInitialEvent()),
-    expect:
-    [NoteInitial(), NotesLoading(), ],
-  }););}
+        expect: [NotesLoading(), YourNotesState(notes: notes)]);
+
+    blocTest("When Add New Note Event is Triggered",
+        build: () {
+          when(noteDatabase.getFullNote()).thenAnswer((_) async => notes);
+          return NoteBloc(noteDatabase);
+        },
+        act: (noteBloc) =>
+            noteBloc.add(NoteAddEvent(title: "title", content: "content!")),
+        expect: [NotesLoading(), YourNotesState(notes: notes)]);
+    blocTest("When Profile Delete Note Event is Triggered",
+        build: () {
+          when(noteDatabase.getFullNote()).thenAnswer((_) async => notes);
+          return NoteBloc(noteDatabase);
+        },
+        act: (noteBloc) => noteBloc.add(NoteDeleteEvent(index: 1)),
+        expect: [NotesLoading(), YourNotesState(notes: notes)]);
+    blocTest("When Profile Edit Note Event is Triggered",
+        build: () {
+          when(noteDatabase.getFullNote()).thenAnswer((_) async => notes);
+          return NoteBloc(noteDatabase);
+        },
+        act: (noteBloc) => noteBloc
+            .add(NoteEditEvent(title: "title", content: "content", index: 1)),
+        expect: [NotesLoading(), YourNotesState(notes: notes)]);
+  });
+}

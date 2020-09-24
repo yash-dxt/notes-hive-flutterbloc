@@ -17,11 +17,10 @@ class NoteDatabase {
     return notes;
   }
 
-  Future<int> addToBox(Note note) async {
+  Future<void> addToBox(Note note) async {
     final box = await noteBox();
 
-    var a = await box.add(note);
-    return a;
+    await box.add(note);
   }
 
   Future<void> deleteFromBox(int index) async {

@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:hive/hive.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes_hive/models/note_model.dart';
 import 'package:notes_hive/services/note_database.dart';
 
@@ -61,6 +60,11 @@ class NoteBloc extends Bloc<NoteEvent, NoteState> {
   Stream<NoteState> _mapNoteDeleteEventToState({int index}) async* {
     yield NotesLoading();
     await _removeFromNotes(index: index);
+    _notes.sort((a, b) {
+      var aDate = a.title;
+      var bDate = b.title;
+      return aDate.compareTo(bDate);
+    });
     yield YourNotesState(notes: _notes);
   }
 

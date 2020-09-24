@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes_hive/bloc/note_bloc.dart';
+import 'package:notes_hive/screens/settings.dart';
 
 import '../widgets.dart';
 import 'edit_note.dart';
@@ -11,32 +12,10 @@ class NotesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Padding(
-          padding: EdgeInsets.all(10),
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (BuildContext context) {
-                return EditNote(
-                  newNote: true,
-                );
-              }));
-            },
-            child: Icon(Icons.add),
-          )),
+      floatingActionButton: FloatingActionButtonRefactor(),
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            backgroundColor: Color(0xFF49565e),
-            title: Text(
-              'Your Notes',
-              style: TextStyle(color: Colors.white),
-            ),
-            expandedHeight: 250,
-            floating: false,
-            pinned: true,
-            flexibleSpace: Container(),
-          ),
+          AppBarOfPage(),
           SliverPadding(padding: EdgeInsets.all(10)),
           BlocBuilder<NoteBloc, NoteState>(
             builder: (context, state) {
@@ -59,6 +38,63 @@ class NotesScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class FloatingActionButtonRefactor extends StatelessWidget {
+  const FloatingActionButtonRefactor({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: EdgeInsets.all(10),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (BuildContext context) {
+              return EditNote(
+                newNote: true,
+              );
+            }));
+          },
+          child: Icon(Icons.add),
+        ));
+  }
+}
+
+class AppBarOfPage extends StatelessWidget {
+  const AppBarOfPage({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      backgroundColor: Color(0xFF49565e),
+      title: Text(
+        'Your Notes',
+        style: TextStyle(color: Colors.white),
+      ),
+      expandedHeight: 250,
+      floating: false,
+      pinned: true,
+      flexibleSpace: Container(),
+      actions: [
+        IconButton(
+          icon: Icon(
+            Icons.settings,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return Settings();
+            }));
+          },
+        )
+      ],
     );
   }
 }
